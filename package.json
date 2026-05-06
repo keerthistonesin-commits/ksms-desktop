@@ -1,0 +1,48 @@
+{
+  "name": "ksms-desktop",
+  "version": "1.0.0",
+  "author": "Keerthi Stones",
+  "description": "Keerthi Smart Marketing System",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder build --win"
+  },
+  "build": {
+    "appId": "com.keerthistones.ksms",
+    "productName": "Keerthi Smart Marketing System",
+    "asar": false,
+    "win": {
+      "target": "nsis",
+      "icon": null
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "KSMS"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "MEE_GITHUB_USERNAME", 
+        "repo": "MEE_GITHUB_REPO_NAME" 
+      }
+    ],
+    "files": [
+      "main.js",
+      "preload.js",
+      "frontend-build/**/*",
+      "backend-build/**/*",
+      "node_modules/**/*"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.3"
+  }
+}
