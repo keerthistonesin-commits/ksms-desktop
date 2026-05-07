@@ -1,6 +1,42 @@
-const { app, BrowserWindow, screen } = require('electron');
+const { app, BrowserWindow, screen, dialog } = require('electron'); // 'dialog' add chesam
 const { spawn } = require('child_process');
 const path = require('path');
+const { autoUpdater } = require('electron-updater'); // Updater import chesam
+
+// --- AUTO UPDATER CONFIGURATION ---
+autoUpdater.autoDownload = true;
+autoUpdater.autoInstallOnAppQuit = true;
+
+// 1. Kotha update dorikithe popup vastundi
+autoUpdater.on('update-available', (info) => {
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Update Available',
+    message: 'Kotha update dorikindi bro! Background lo download avtundi, 1-2 mins wait cheyyandi.'
+  });
+});
+
+// 2. Update lekapothe console lo padutundi
+autoUpdater.on('update-not-available', (info) => {
+  console.log('Update not available presently.');
+});
+
+// 3. Emaina ERROR vaste e popup vastundi (Idi chala important)
+autoUpdater.on('error', (err) => {
+  dialog.showErrorBox('Updater Error', err == null ? "unknown" : (err.stack || err).toString());
+});
+
+// 4. Download aipoindi, restart ki ready
+autoUpdater.on('update-downloaded', (info) => {
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Update Ready',
+    message: 'Download aipoindi! App restart avtundi.'
+  }).then(() => {
+    autoUpdater.quitAndInstall();
+  });
+});
+// ----------------------------------
 
 let mainWindow;
 let backendProcess;
@@ -61,6 +97,12 @@ app.whenReady().then(async () => {
       }, true);
     `);
   });
+
+  // --- TRIGGER THE UPDATER ---
+  // App open ayyina 3 seconds ki silent ga update check chestundi
+  setTimeout(() => {
+    autoUpdater.checkForUpdatesAndNotify();
+  }, 3000);
 
   mainWindow.on('closed', () => {
     mainWindow = null;
